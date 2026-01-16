@@ -1,8 +1,9 @@
 project:
   type: website
+  output-dir: docs
 
 website:
-  title: "Fin451-Pitch"
+  title: "Alex Hirtle"
   navbar:
     left:
       - href: index.qmd
@@ -13,9 +14,7 @@ format:
   html:
     theme:
       - cosmo
-      - brand
     css: styles.css
     toc: true
 
 editor: visual
-
