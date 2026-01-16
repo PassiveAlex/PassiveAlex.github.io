@@ -1,0 +1,110 @@
+---
+title: "Fin 452 - Analysis of Correlation over time for SPY and Mag 7 stocks"
+editor: visual
+author: "Alex Hirtle, Moe Moughnieh, Will Thompson"
+format: 
+  html:
+    self-contained: true
+    embed-resources: true
+---
+
+```{r, "Chunk Opts"}
+# This chunk sets generic flags for chunks.
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r, "Libraries"}
+# This chunk loads all required libraries for further chunks.
+
+library(tidyverse)
+library(tidyquant)
+library(RTL)
+library(patchwork)
+library(GGally)
+library(plotly)
+library(quantmod)
+library(gt)
+library(slider)
+library(dotenv)
+library(tsibble)
+```
+
+```{r, "Pulling Data"}
+tick <- c("SPY",
+          "XLY",
+          "XLC",
+          "XLP",
+          "XLE",
+          "XLF",
+          "XLV",
+          "XLI",
+          "XLK",
+          "XLB",
+          "XLRE",
+          "XLU",
+          "AAPL",
+          "AMZN",
+          "GOOG",
+          "NVDA",
+          "MSFT",
+          "TSLA",
+          "META",
+          "MAGS")
+
+from_date <- "2013-01-01"
+to_date <- "2024-12-31"
+
+data_2013_2024_long <- tidyquant::tq_get(tick, 
+                      get = "stock.prices", 
+                      complete_cases = TRUE, 
+                      from = from_date, 
+                      to = to_date) %>%
+  dplyr::select(date, symbol, adjusted) %>%
+  dplyr::group_by(symbol) %>%
+  dplyr::mutate(ret = (adjusted - lag(adjusted))/lag(adjusted)) %>%
+  dplyr::select(date, symbol, ret)
+
+data_2013_2024_wide <- tidyr::pivot_wider(data_2013_2024_long, 
+                                          names_from = symbol, 
+                                          values_from = ret) %>%
+  select(date, SPY, XLK, everything()) %>%
+  na.omit()
+```
+
+``` {r, "Correlation Matrix"}
+
+data_sans_mags <- data_2013_2024_wide %>%
+  dplyr::select(-c(date, "AMZN", "META", "GOOG", "TSLA", "AAPL", "MSFT", "NVDA")) %>%
+  select(SPY, XLK, everything())
+
+cor_matrix_all <- cor(data_sans_mags[,1:ncol(data_sans_mags)], 
+                      use = "complete.obs")
+
+ggpairs(data_sans_mags,
+             upper = list(continuous = wrap("cor", size = 2)),
+             lower = list(continuous = wrap("points", size = 0.3)),
+             progress = FALSE) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+```
+
+## Intro
+
+In the following report, we will examine the relationship between correlation, variance, covariance, and standard deviation between the S&P 500 (SPY) and the Magnificent 7 (MAGS) between the time periods of 2013-2014 and 2023-2024.
+
+## Correlation
+
+Throughout the periods, correlation varied greatly. Reaching a maximum of approximately 0.98, and a minimum of 0.50. Clustering of high/low correlation was present to a large degree (talk about output of GARCH(1,1) and shit).
+
+Over time however, we found as the weights of the MAG 7 group of firms within the S&P 500 increased. However, a large proportion of this increase in correlation can be explained by co-movement of other tech or tech-related fields. 
+
+## Variance
+
+## Covariance
+
+## Standard deviation
+
