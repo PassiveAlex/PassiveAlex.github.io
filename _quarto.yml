@@ -3,17 +3,18 @@ project:
   output-dir: docs
 
 website:
-  title: "Alex Hirtle"
+  title: "Alex Hirtle - Portfolio"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: projects.qmd
+        text: Projects
 
 format:
   html:
     theme:
-      - cosmo
+      - flatly
     css: styles.css
     toc: true
 
