@@ -2,11 +2,7 @@
 title: "Alex Hirtle - Portfolio"
 ---
 
-<div style="text-align: center;">
-  <img src="path/to/your/headshot.jpg" alt="Alex Hirtle Headshot" style="border-radius: 50%; width: 200px; height: 200px; object-fit: cover; margin-bottom: 20px;">
-</div>
-
-# Alex Hirtle, Ualberta Finance Honours \| Student
+# Alex Hirtle, Ualberta Finance Honours
 
 Alex Hirtle is a fourth year Finance Honours student studying at the University of Alberta School of Business.
 
